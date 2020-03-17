@@ -284,5 +284,5 @@ INVALID_END_DATE = {
 NOT_IMPLEMENTED = {"message": "Not implemented."}
 
 # Failed to send Email verification on Register new user
-REGISTRATION_FAILED = {"message": "We are unable to complete your request. Please try again later."}
+REGISTRATION_FAILED = {"message": "We are unable to complete your request. Please contact our IT support desk for help."}
 
