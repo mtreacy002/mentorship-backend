@@ -258,6 +258,7 @@ class UserRegister(Resource):
             messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS,
         ),
     )
+    @users_ns.response(407, "%s" % messages.APP_EMAIL_SETTINGS_ERROR)
     @users_ns.expect(register_user_api_model, validate=True)
     def post(cls):
         """
@@ -276,10 +277,17 @@ class UserRegister(Resource):
         if is_valid != {}:
             return is_valid, 400
 
-        result = DAO.create_user(data)
-
-        if result[1] is 200:
+        failed_send = False;
+        try:
             send_email_verification_message(data["name"], data["email"])
+        
+        except OSError as e:
+            failed_send = True
+            print("OS error: {0}".format(e))
+            return messages.APP_EMAIL_SETTINGS_ERROR, 407
+
+        if failed_send == False:
+            result = DAO.create_user(data)
 
         return result
 
