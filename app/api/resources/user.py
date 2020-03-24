@@ -248,12 +248,16 @@ class VerifiedUser(Resource):
 @users_ns.route("register")
 class UserRegister(Resource):
     @classmethod
-    @users_ns.doc('create_user')
-    @users_ns.response(200, '%s'%messages.USER_WAS_CREATED_SUCCESSFULLY)
-    @users_ns.response(400, '%s\n%s'%(
-        messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS,
-        messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS
-    ))
+    @users_ns.doc("create_user")
+    @users_ns.response(200, "%s" % messages.USER_WAS_CREATED_SUCCESSFULLY)
+    @users_ns.response(
+        400,
+        "%s\n%s"
+        % (
+            messages.USER_USES_A_USERNAME_THAT_ALREADY_EXISTS,
+            messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS,
+        ),
+    )
     @users_ns.response(407, '%s'%messages.REGISTRATION_FAILED)
     @users_ns.expect(register_user_api_model, validate=True)
     def post(cls):
@@ -273,14 +277,16 @@ class UserRegister(Resource):
         if is_valid != {}:
             return is_valid, 400
 
-        failed_send = ""
+        failed_send = False
         try:
             send_email_verification_message(data['name'], data['email'])
             
-        except:
-            failed_send = messages.REGISTRATION_FAILED
+        except OSError as err:
+            failed_send = True
+            print("OS error: {0}".format(err))
+            
         
-        if failed_send == "":
+        if failed_send == False:
             result = DAO.create_user(data)
         else:
             return messages.REGISTRATION_FAILED, 407
