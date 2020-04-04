@@ -282,11 +282,3 @@ INVALID_END_DATE = {
     "message": "Validation error. End date represented by the timestamp is invalid."
 }
 NOT_IMPLEMENTED = {"message": "Not implemented."}
-
-# Failed to send Email verification on Register new user
-REGISTRATION_FAILED = {"message": "We are unable to complete your request. Please contact our IT support desk for help."}
-# Failed to send verification Email with error caused by wrong setting on Developer's default email in .env file
-APP_EMAIL_SETTINGS_ERROR = {
-    "message": "The application is not authorized to use the email server stated in its configuration. Developers, please adjust your email security settings."
-}
-

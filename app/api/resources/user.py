@@ -16,8 +16,6 @@ from app.api.email_utils import send_email_verification_message
 from app.api.models.user import *
 from app.api.dao.user import UserDAO
 from app.api.resources.common import auth_header_parser
-import smtplib
-from smtplib import *
 
 users_ns = Namespace("Users", description="Operations related to users")
 add_models_to_namespace(users_ns)
@@ -260,8 +258,6 @@ class UserRegister(Resource):
             messages.USER_USES_AN_EMAIL_ID_THAT_ALREADY_EXISTS,
         ),
     )
-    @users_ns.response(407, '%s'%messages.REGISTRATION_FAILED)
-    @users_ns.response(500, '%s'%messages.APP_EMAIL_SETTINGS_ERROR)
     @users_ns.expect(register_user_api_model, validate=True)
     def post(cls):
         """
@@ -280,23 +276,10 @@ class UserRegister(Resource):
         if is_valid != {}:
             return is_valid, 400
 
-        failed_send = False
-        try:
-            send_email_verification_message(data['name'], data['email'])
-            
-        except OSError as os_err:
-            failed_send = True
-            print("OS error: {0}".format(os_err))
-            return messages.APP_EMAIL_SETTINGS_ERROR, 500
-        except SMTPResponseException as smtp_err:
-            failed_send = True
-            error_code = smtp_err.smtp_code
-            error_message = smtp_err.smtp_error
-            print("SMTP error: " + error_code + "," + error_message)
-            return messages.REGISTRATION_FAILED, 407
-        
-        if failed_send == False:
-            result = DAO.create_user(data)
+        result = DAO.create_user(data)
+
+        if result[1] is 200:
+            send_email_verification_message(data["name"], data["email"])
 
         return result
 
