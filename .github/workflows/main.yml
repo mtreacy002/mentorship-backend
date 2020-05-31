@@ -5,17 +5,44 @@ name: Run tests
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ bit ]
   pull_request:
-    branches: [ develop ]
+    branches: [ bit ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    container: gradle:jdk11
+    services:
+      postgres:
+        image: postgres
+        env: 
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
     steps:
     - uses: actions/checkout@v2
+    - run: |
+        apt-get update
+        apt-get install --yes --no-install-recommends postgresql-client
+    - name: Connect to PostgreSQL
+      run: |
+        psql -c 'CREATE DATABASE bit_schema_test;' -U postgres
+        psql -c 'CREATE SCHEMA bitschema;' -U postgres -d bit_schema_test
+        psql -c 'CREATE SCHEMA test_schema;' -U postgres -d bit_schema_test
+        psql -c 'create SCHEMA test_schema_2;' -U postgres -d bit_schema_test
+        psql -c '\dn;' -U postgres -d bit_schema_test
+        psql -c 'show search_path;' -U postgres -d bit_schema_test
+        psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
+        psql -c 'show search_path;' -U postgres -d bit_schema_test
+      env:
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: 5432
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
       with:
