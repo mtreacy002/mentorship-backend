@@ -36,7 +36,6 @@ jobs:
         psql -c 'show search_path;' -U postgres -d bit_schema_test
         psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
         psql -c 'show search_path;' -U postgres -d bit_schema_test
-      working-directory: ./postgres
       env:
         # use localhost for the host here because we are running the job on the VM.
         # If we were running the job on in a container this would be postgres
