@@ -32,6 +32,9 @@ jobs:
     - run: |
         apt-get update
         apt-get install --yes --no-install-recommends postgresql-client
+    - name: check verison
+      run: |  
+        psql --version
     - name: Connect to PostgreSQL
       run: |
         psql -c 'CREATE DATABASE bit_schema_test;' -U postgres
