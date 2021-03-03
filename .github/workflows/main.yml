@@ -35,6 +35,7 @@ jobs:
     - name: check verison
       run: |  
         psql --version
+        psql --host 
     - name: Connect to PostgreSQL
       run: |
         psql -c 'CREATE DATABASE bit_schema_test;' -U postgres
