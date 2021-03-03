@@ -15,7 +15,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:10.8
+        image: postgres:latest
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -26,17 +26,6 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-    - uses: actions/checkout@v1     
-    - run: echo "Hello"
-      working-directory: ./postgres
-      env:
-        # use localhost for the host here because we are running the job on the VM.
-        # If we were running the job on in a container this would be postgres
-        POSTGRES_HOST: localhost
-        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
-    - name: check verison
-      run: |  
-        psql --version
     - name: Connect to PostgreSQL
       run: |
         psql -c 'CREATE DATABASE bit_schema_test;' -U postgres
@@ -47,6 +36,15 @@ jobs:
         psql -c 'show search_path;' -U postgres -d bit_schema_test
         psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
         psql -c 'show search_path;' -U postgres -d bit_schema_test
+      working-directory: ./postgres
+      env:
+        # use localhost for the host here because we are running the job on the VM.
+        # If we were running the job on in a container this would be postgres
+        POSTGRES_HOST: localhost
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
+    - name: check verison
+      run: |  
+        psql --version
     
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
