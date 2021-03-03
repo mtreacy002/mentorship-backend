@@ -9,7 +9,8 @@ on:
   pull_request:
     branches: [ bit , initial-bit-integration ]
 
-vm-job:
+jobs: 
+  vm-job:
     runs-on: ubuntu-latest
 
     services:
@@ -24,12 +25,9 @@ vm-job:
         - 5432/tcp
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
     - uses: actions/checkout@v1     
-    - run: npm ci
-      working-directory: ./postgres
-    - run: node client.js
+    - run: echo "Hello"
       working-directory: ./postgres
       env:
         # use localhost for the host here because we are running the job on the VM.
@@ -39,7 +37,6 @@ vm-job:
     - name: check verison
       run: |  
         psql --version
-        psql --host 
     - name: Connect to PostgreSQL
       run: |
         psql -c 'CREATE DATABASE bit_schema_test;' -U postgres
@@ -50,9 +47,7 @@ vm-job:
         psql -c 'show search_path;' -U postgres -d bit_schema_test
         psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
         psql -c 'show search_path;' -U postgres -d bit_schema_test
-      env:
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: 5432
+    
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
       with:
