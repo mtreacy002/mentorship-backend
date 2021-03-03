@@ -43,7 +43,7 @@ jobs:
         psql -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
         psql -c 'show search_path;' -U postgres -d bit_schema_test
       env:
-        POSTGRES_HOST: localhost
+        POSTGRES_HOST: postgres
         POSTGRES_PORT: 5432
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
