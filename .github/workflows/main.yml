@@ -9,29 +9,33 @@ on:
   pull_request:
     branches: [ bit , initial-bit-integration ]
 
-jobs:
-  build:
-
+vm-job:
     runs-on: ubuntu-latest
-    container: gradle:jdk11
+
     services:
       postgres:
-        image: postgres:latest
-        env: 
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    
+        # will assign a random free host port
+        - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
-    - uses: actions/checkout@v2
-    - run: |
-        apt-get update
-        apt-get install --yes --no-install-recommends postgresql-client
+    - uses: actions/checkout@v1     
+    - run: npm ci
+      working-directory: ./postgres
+    - run: node client.js
+      working-directory: ./postgres
+      env:
+        # use localhost for the host here because we are running the job on the VM.
+        # If we were running the job on in a container this would be postgres
+        POSTGRES_HOST: localhost
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
     - name: check verison
       run: |  
         psql --version
