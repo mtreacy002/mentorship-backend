@@ -50,9 +50,7 @@ jobs:
         python-version: 3.6
     - name: Install dependencies
       run: |
-        python --version 
-        python3 --version 
-        python3 -m pip install --upgrade pip
+        sudo -H python -m pip install --upgrade pip
         pip --version
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run tests
