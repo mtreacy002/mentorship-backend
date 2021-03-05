@@ -126,7 +126,7 @@ class LocalConfig(BaseConfig):
     DEBUG = True
 
     # Using a local postgre database
-    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/bit_schema"
     # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
 
 
@@ -137,7 +137,7 @@ class TestingConfig(BaseConfig):
     MOCK_EMAIL = True
 
     # Use in-memory SQLite database for testing
-    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema_test"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/bit_schema"
     # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
 
 
