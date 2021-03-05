@@ -138,7 +138,6 @@ class TestingConfig(BaseConfig):
 
     # Use in-memory SQLite database for testing
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost:5432/bit_schema"
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
 
 
 def get_env_config() -> str:
