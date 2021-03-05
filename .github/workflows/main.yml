@@ -32,11 +32,11 @@ jobs:
         PGPASSWORD=postgres psql -h localhost -c 'CREATE DATABASE bit_schema_test;' -U postgres
         PGPASSWORD=postgres psql -h localhost -c 'CREATE SCHEMA bitschema;' -U postgres -d bit_schema_test
         PGPASSWORD=postgres psql -h localhost -c 'CREATE SCHEMA test_schema;' -U postgres -d bit_schema_test
-        PGPASSWORD=postgres psql -h postgres -c 'create SCHEMA test_schema_2;' -U postgres -d bit_schema_test
-        PGPASSWORD=postgres psql -h postgres -c '\dn;' -U postgres -d bit_schema_test
-        PGPASSWORD=postgres psql -h postgres -c 'show search_path;' -U postgres -d bit_schema_test
-        PGPASSWORD=postgres psql -h postgres -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
-        PGPASSWORD=postgres psql -h postgres -c 'show search_path;' -U postgres -d bit_schema_test
+        PGPASSWORD=postgres psql -h localhost -c 'create SCHEMA test_schema_2;' -U postgres -d bit_schema_test
+        PGPASSWORD=postgres psql -h localhost -c '\dn;' -U postgres -d bit_schema_test
+        PGPASSWORD=postgres psql -h localhost -c 'show search_path;' -U postgres -d bit_schema_test
+        PGPASSWORD=postgres psql -h localhost -c "ALTER DATABASE bit_schema_test SET search_path TO bitschema,public;" -U postgres -d bit_schema_test
+        PGPASSWORD=postgres psql -h localhost -c 'show search_path;' -U postgres -d bit_schema_test
       env:
         POSTGRES_HOST: localhost
         POSTGRES_PORT: 5432
