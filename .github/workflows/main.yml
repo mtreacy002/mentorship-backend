@@ -27,9 +27,6 @@ jobs:
           - 5432:5432
     steps:
     - uses: actions/checkout@v2
-    - run: |
-        apt-get update
-        apt-get install --yes --no-install-recommends postgresql-client
     - name: Connect to PostgreSQL
       run: |
         PGPASSWORD=postgres psql -h postgres -c 'CREATE DATABASE bit_schema_test;' -U postgres
