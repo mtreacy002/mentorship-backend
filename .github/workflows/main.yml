@@ -52,6 +52,12 @@ jobs:
     - name: Run tests
       run: |
         python -m unittest discover tests -v
+      env:
+        DB_PASSWORD: postgres 
+        DB_TYPE: postgres 
+        DB_USER: localhost 
+        DB_TEST_NAME: bit_schema_test
+        
     - name: Generate coverage report
       run: |
         pip install pytest
