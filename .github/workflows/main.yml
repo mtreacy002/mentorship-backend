@@ -5,9 +5,9 @@ name: Run tests
 
 on:
   push:
-    branches: [ bit , initial-bit-integration, develop , patch-2]
+    branches: [ bit , initial-bit-integration , patch-2]
   pull_request:
-    branches: [ bit , initial-bit-integration, develop . patch-2]
+    branches: [ bit , initial-bit-integration, patch-2]
 
 jobs:
   build:
