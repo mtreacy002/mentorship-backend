@@ -41,7 +41,7 @@ TASK_COMMENT_WITH_GIVEN_TASK_ID_DOES_NOT_EXIST = {
 # Missing fields
 MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor ID field is missing."}
 MENTEE_ID_FIELD_IS_MISSING = {"message": "Mentee ID field is missing."}
-MENTEE_OR_MENTOR_ID_FIELD_IS_MISSING = {"message": "Send either Mentor or Mentee ID field in the request body."}
+MENTEE_OR_MENTOR_ID_FIELD_IS_MISSING = {"message": "Mentor or Mentee ID field cannot be empty."}
 ORG_REP_ID_FIELD_IS_MISSING = {"message": "Org Representative ID field is missing."}
 MENTORSHIP_RELATION_ID_FIELD_IS_MISSING = {"message": "Mentorship relation ID field is missing."}
 START_DATE_FIELD_IS_MISSING = {"message": "Start date field is missing."}
@@ -332,4 +332,4 @@ INVALID_END_DATE = {
     "message": "Validation error. End date represented by the timestamp is invalid."
 }
 NOT_IMPLEMENTED = {"message": "Not implemented."}
-MENTEE_AND_MENTOR_ID_FIELDS_ARE_PRESENT = {"messages" : "You cannot send both Mentor and Mentee ID in the request body."}
+MENTEE_AND_MENTOR_ID_FIELDS_ARE_PRESENT = {"messages" : "You cannot send Both Mentor and Mentee ID fields at the same time."}

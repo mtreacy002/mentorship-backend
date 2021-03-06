@@ -7,21 +7,21 @@ from app import messages
 from app.api.resources.common import auth_header_parser
 from app.api.dao.program_mentorship_relation import ProgramMentorshipRelationDAO
 from app.api.dao.user import UserDAO
-from app.api.models.mentorship_relation import *
+from app.api.models.program_mentorship_relation import *
 from app.database.models.mentorship_relation import MentorshipRelationModel
 from app.api.email_utils import send_email_program_mentorship_relation_accepted
 from app.api.email_utils import send_email_new_request
 
 program_mentorship_relation_ns = Namespace(
     "Program Mentorship Relation",
-    description="Operations related to " "mentorship relations " "between users",
+    description="Operations related to " "program mentorship relations " "between users",
 )
 add_models_to_namespace(program_mentorship_relation_ns)
 
 DAO = ProgramMentorshipRelationDAO()
 userDAO = UserDAO()
 
-@program_mentorship_relation_ns.route("program_mentorship_relation/send_request")
+@program_mentorship_relation_ns.route("program_mentorship_relation/send_request/")
 class SendRequest(Resource):
     @classmethod
     @jwt_required
@@ -57,19 +57,21 @@ class SendRequest(Resource):
     )
     def post(cls):
         """
-        Creates a new mentorship relation request.
+        Creates a new program mentorship relation request.
 
         Also, sends an email notification to the recipient about new relation request.
 
         Input:
         1. Header: valid access token
         2. Body: A dict containing
-        - mentor_id, mentee_id: One of them must contain user ID
-        - end_date: UNIX timestamp
+        - mentor_id or mentee_id: One of them must be present and contain user ID
+        - org_rep_id: organization's representative's id
+        - start_date: program start date in UNIX timestamp
+        - end_date: program end date in UNIX timestamp
         - notes: description of relation request
 
         Returns:
-        Success or failure message. A mentorship request is send to the other
+        Success or failure message. A program mentorship request is send to the other
         person whose ID is mentioned. The relation appears at /pending endpoint.
         """
 
@@ -80,8 +82,8 @@ class SendRequest(Resource):
 
         if is_valid != {}:
             return is_valid, HTTPStatus.BAD_REQUEST
-
-        org_rep_id = data.pop("org_rep_id")
+        
+        org_rep_id = data["org_rep_id"]
         
         if "relation_id" in data:
             relation_id = data.pop("relation_id")
@@ -106,6 +108,8 @@ class SendRequest(Resource):
                 if mentee_id is None or ((mentorship_relation.action_user_id == mentorship_relation.mentor_id) and mentorship_relation.action_user_id != org_rep_id):
                     return messages.MENTOR_ALREADY_ACCEPTED, HTTPStatus.BAD_REQUEST
 
+                response = DAO.create_program_mentorship_relation_final_program_mentor(user_sender_id,relation_id,data)
+            
             # request to/by mentee
             if "mentee_id" in data:
                 if mentorship_relation_mentee_id == data['mentee_id']:
@@ -117,20 +121,20 @@ class SendRequest(Resource):
                 if mentor_id is None or ((mentorship_relation.action_user_id == mentorship_relation.mentee_id) and mentorship_relation.action_user_id != org_rep_id):
                     return messages.MENTEE_ALREADY_ACCEPTED, HTTPStatus.BAD_REQUEST
 
-        else:    
-            # request to mentor
-            if "mentor_id" in data:
-                mentor_id = data["mentor_id"]
-                mentee_id = None
-                
-            # request to mentee
-            else:
-                mentee_id = data["mentee_id"]
-                mentor_id = None
+                response = DAO.create_program_mentorship_relation_final_program_mentee(user_sender_id,relation_id,data)
 
-            relation_id = None    
-            
-        response = DAO.create_program_mentorship_relation(user_sender_id, org_rep_id, mentor_id, mentee_id, relation_id, data)
+        else:
+            # request to/by mentor
+            if "mentor_id" in data:
+                mentor_id = data["mentor_id"] 
+                mentee_id = None 
+                response = DAO.create_program_mentorship_relation_initial_program_mentor(user_sender_id,data)
+                    
+            # request to/by mentee
+            elif "mentee_id" in data:
+                mentee_id = data["mentee_id"] 
+                mentor_id = None 
+                response = DAO.create_program_mentorship_relation_initial_program_mentee(user_sender_id,data)
 
         # if the mentorship relation creation failed dont send email and return
         if response[1] != HTTPStatus.CREATED.value:
@@ -166,9 +170,9 @@ class SendRequest(Resource):
             return messages.MENTEE_OR_MENTOR_ID_FIELD_IS_MISSING
         if "mentor_id" in data and "mentee_id" in data:
             return messages.MENTEE_AND_MENTOR_ID_FIELDS_ARE_PRESENT
-        if "start_date" not in data:
+        if "start_date" not in data and "relation_id" not in data:
             return messages.START_DATE_FIELD_IS_MISSING
-        if "end_date" not in data:
+        if "end_date" not in data and "relation_id" not in data:
             return messages.END_DATE_FIELD_IS_MISSING
         if "notes" not in data:
             return messages.NOTES_FIELD_IS_MISSING
