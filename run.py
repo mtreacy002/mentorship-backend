@@ -26,7 +26,7 @@ def create_app(config_filename: str) -> Flask:
 
     migrate = Migrate(app, db)
 
-    cors.init_app(app, resources={r"*": {"origins": "http:localhost:5000"}})
+    cors.init_app(app, resources={r"*": {"origins": "http:BIT:5000"}})
 
     from app.api.jwt_extension import jwt
 
