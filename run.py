@@ -86,4 +86,5 @@ def make_shell_context():
 
 
 if __name__ == "__main__":
-    application.run(port=4000)
+    # if we use docker then we can also run it on the default 5000 port
+    application.run(port=5000)
