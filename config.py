@@ -126,7 +126,7 @@ class LocalConfig(BaseConfig):
     DEBUG = True
 
     # Using a local postgre databases on MacOS
-    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@postgres:5432/bit_schema"
 
     # Using a local postgre databases on other OS
     # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
