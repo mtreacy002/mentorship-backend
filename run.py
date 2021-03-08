@@ -62,6 +62,10 @@ def create_tables():
     from app.database.models.tasks_list import TasksListModel
     from app.database.models.task_comment import TaskCommentModel
 
+    db.session.execute("CREATE SCHEMA IF NOT EXISTS bit_schema")
+    db.session.execute("CREATE SCHEMA IF NOT EXISTS bit_schema_test")
+    db.session.execute("ALTER DATABASE bit_schema SET search_path TO bitschema,public;")
+    db.session.commit()
     db.create_all()
 
 
