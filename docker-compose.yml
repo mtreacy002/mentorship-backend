@@ -5,17 +5,10 @@ services:
         POSTGRES_PASSWORD: postgres
         #Default_DB that will be connected
         POSTGRES_DB: bit_schema
-        restart: always
-      #options: 
-        #--health-cmd pg_isready
-        #--health-interval 10s
-        #--health-timeout 5s
-        #--health-retries 5
     web: 
       build: . 
       ports: 
-        - 4000:5000 
-      restart: always
+        - 4000:5000
     
       
     
