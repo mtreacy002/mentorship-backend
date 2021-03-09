@@ -14,12 +14,6 @@ def create_app(config_filename: str) -> Flask:
     app.url_map.strict_slashes = False
     from app.database.sqlalchemy_extension import db
 
-    print(app.config["SQLALCHEMY_DATABASE_URI"])
-    if (
-        app.config["SQLALCHEMY_DATABASE_URI"]
-        != "postgresql://postgres:postgres@postgres:5432/bit_schema"
-    ):
-        raise Exception(app.config["SQLALCHEMY_DATABASE_URI"])
     db.init_app(app)
 
     from app.database.models.user import UserModel
@@ -67,10 +61,6 @@ def create_tables():
     from app.database.models.tasks_list import TasksListModel
     from app.database.models.task_comment import TaskCommentModel
 
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS bitschema")
-    db.session.execute("CREATE SCHEMA IF NOT EXISTS bitschematest")
-    db.session.execute("ALTER DATABASE bit_schema SET search_path TO bitschema,public;")
-    db.session.commit()
     db.create_all()
 
 
