@@ -12,7 +12,6 @@ def create_app(config_filename: str) -> Flask:
     # setup application environment
     app.config.from_object(config_filename)
     app.url_map.strict_slashes = False
-
     from app.database.sqlalchemy_extension import db
 
     db.init_app(app)
@@ -26,7 +25,7 @@ def create_app(config_filename: str) -> Flask:
 
     migrate = Migrate(app, db)
 
-    cors.init_app(app, resources={r"*": {"origins": "http:localhost:5000"}})
+    cors.init_app(app, resources={r"*": {"origins": "http:BIT:5000"}})
 
     from app.api.jwt_extension import jwt
 
@@ -82,4 +81,5 @@ def make_shell_context():
 
 
 if __name__ == "__main__":
-    application.run(port=4000)
+    # if we use docker then we can also run it on the default 5000 port
+    application.run(port=5000)

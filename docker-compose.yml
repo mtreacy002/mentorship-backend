@@ -1,0 +1,15 @@
+services:
+    postgres:
+      image: postgres
+      environment: 
+        POSTGRES_PASSWORD: postgres
+        #Default_DB that will be connected
+        POSTGRES_DB: bit_schema
+    web: 
+      build: . 
+      ports: 
+        - 4000:5000
+    
+      
+    
+        

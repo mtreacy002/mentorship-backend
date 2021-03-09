@@ -43,6 +43,7 @@ class BaseConfig(object):
     DB_ENDPOINT = os.getenv("DB_ENDPOINT")
     DB_NAME = os.getenv("DB_NAME")
     DB_TEST_NAME = os.getenv("DB_TEST_NAME")
+    DB_TEST_ENDPOINT = os.getenv("DB_TEST_ENDPOINT", DB_ENDPOINT)
 
     UNVERIFIED_USER_THRESHOLD = 2592000  # 30 days
 
@@ -92,7 +93,7 @@ class BaseConfig(object):
         db_type_arg=DB_TYPE,
         db_user_arg=DB_USERNAME,
         db_password_arg=DB_PASSWORD,
-        db_endpoint_arg=DB_ENDPOINT,
+        db_endpoint_arg=DB_TEST_ENDPOINT,
         db_name_arg=DB_TEST_NAME,
     ):
         return f"{db_type_arg}://{db_user_arg}:{db_password_arg}@{db_endpoint_arg}/{db_name_arg}"
@@ -124,12 +125,7 @@ class LocalConfig(BaseConfig):
     """Local configuration."""
 
     DEBUG = True
-
-    # Using a local postgre databases on MacOS
-    SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
-
-    # Using a local postgre databases on other OS
-    # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
 
 
 class TestingConfig(BaseConfig):
