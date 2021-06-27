@@ -77,24 +77,23 @@ class BaseConfig(object):
     # mail accounts
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
 
-    
     @staticmethod
     def build_db_uri(
-        db_type_arg = os.getenv("DB_TYPE"),
-        db_user_arg = os.getenv("DB_USERNAME"),
-        db_password_arg = os.getenv("DB_PASSWORD"),
-        db_endpoint_arg = os.getenv("DB_ENDPOINT"),
-        db_name_arg = os.getenv("DB_NAME"),
+        db_type_arg=os.getenv("DB_TYPE"),
+        db_user_arg=os.getenv("DB_USERNAME"),
+        db_password_arg=os.getenv("DB_PASSWORD"),
+        db_endpoint_arg=os.getenv("DB_ENDPOINT"),
+        db_name_arg=os.getenv("DB_NAME"),
     ):
         return f"{db_type_arg}://{db_user_arg}:{db_password_arg}@{db_endpoint_arg}/{db_name_arg}"
-    
+
     @staticmethod
     def build_db_test_uri(
-        db_type_arg = os.getenv("DB_TYPE"),
-        db_user_arg = os.getenv("DB_USERNAME"),
-        db_password_arg = os.getenv("DB_PASSWORD"),
-        db_endpoint_arg = os.getenv("DB_ENDPOINT"),
-        db_name_arg = os.getenv("DB_TEST_NAME"),
+        db_type_arg=os.getenv("DB_TYPE"),
+        db_user_arg=os.getenv("DB_USERNAME"),
+        db_password_arg=os.getenv("DB_PASSWORD"),
+        db_endpoint_arg=os.getenv("DB_ENDPOINT"),
+        db_name_arg=os.getenv("DB_TEST_NAME"),
     ):
         return f"{db_type_arg}://{db_user_arg}:{db_password_arg}@{db_endpoint_arg}/{db_name_arg}"
 
@@ -110,7 +109,9 @@ class DevelopmentConfig(BaseConfig):
     """Development configuration."""
 
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
+    # Using elephantsql - BridgeInTech remote db
+    # https://ms-backend-bit.herokuapp.com/
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_REMOTE_URL")
 
 
 class StagingConfig(BaseConfig):
@@ -129,7 +130,8 @@ class LocalConfig(BaseConfig):
     # Using a local postgre database
     SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema"
     # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_uri()
-    
+
+
 class TestingConfig(BaseConfig):
     """Testing configuration."""
 
@@ -140,7 +142,7 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = "postgresql:///bit_schema_test"
     # SQLALCHEMY_DATABASE_URI = BaseConfig.build_db_test_uri()
 
-    
+
 def get_env_config() -> str:
     flask_config_name = os.getenv("FLASK_ENVIRONMENT_CONFIG", "dev")
     if flask_config_name not in ["prod", "test", "dev", "local", "stag"]:
